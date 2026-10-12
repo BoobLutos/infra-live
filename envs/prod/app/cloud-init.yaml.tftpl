@@ -1,0 +1,19 @@
+#cloud-config
+package_update: true
+package_upgrade: true
+packages:
+  - nginx
+  - unattended-upgrades
+
+ssh_pwauth: false
+
+write_files:
+  - path: /var/www/html/index.html
+    content: |
+      <!doctype html>
+      <title>Terraform pilot (${environment})</title>
+      <h1>Terraform pilot: ${environment}</h1>
+      <p>Provisioned by HCP Terraform on Linode.</p>
+
+runcmd:
+  - systemctl enable --now nginx
