@@ -2,7 +2,7 @@ terraform {
   required_version = ">= 1.10"
 
   cloud {
-    organization = "moln"
+    organization = "zimba"
 
     workspaces {
       name = "app-prod"
@@ -62,7 +62,7 @@ data "linode_vpc_subnets" "app" {
 }
 
 module "web" {
-  source  = "app.terraform.io/moln/webserver/linode"
+  source  = "app.terraform.io/zimba/webserver/linode"
   version = "1.0.0" # exact pin: promote new versions dev -> prod via PR
 
   name          = "pilot"

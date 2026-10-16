@@ -1,30 +1,18 @@
 # HCP Terraform OPA policy set definition.
-# The free tier allows one policy set with up to five policies; this uses all five.
+# Free-tier limits: one policy set, and only ONE mandatory policy. All blocking
+# rules are therefore combined in mandatory.rego; the rest are advisory.
 #
 # mandatory = the run stops on violation (no override)
 # advisory  = the run shows a warning but can continue
+#
+# hcp-bootstrap uploads these (the free tier can't sync policy sets from Git).
 
-policy "allowed_regions" {
-  query             = "data.terraform.policies.allowed_regions.deny"
-  enforcement_level = "mandatory"
-}
-
-policy "allowed_instance_types" {
-  query             = "data.terraform.policies.allowed_instance_types.deny"
+policy "mandatory" {
+  query             = "data.terraform.policies.mandatory.deny"
   enforcement_level = "mandatory"
 }
 
 policy "required_tags" {
   query             = "data.terraform.policies.required_tags.deny"
   enforcement_level = "advisory"
-}
-
-policy "firewall_baseline" {
-  query             = "data.terraform.policies.firewall_baseline.deny"
-  enforcement_level = "mandatory"
-}
-
-policy "no_public_ssh" {
-  query             = "data.terraform.policies.no_public_ssh.deny"
-  enforcement_level = "mandatory"
 }
