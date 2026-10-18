@@ -4,7 +4,7 @@ terraform {
   # Used for CLI-driven speculative plans from a laptop. VCS-driven runs in
   # HCP Terraform use the workspace this directory is connected to.
   cloud {
-    organization = "moln"
+    organization = "zimba"
 
     workspaces {
       name = "network-prod"
@@ -24,7 +24,7 @@ terraform {
 provider "linode" {}
 
 module "network" {
-  source  = "app.terraform.io/moln/network/linode"
+  source  = "app.terraform.io/zimba/network/linode"
   version = "1.0.0" # exact pin: promote new versions dev -> prod via PR
 
   name        = "pilot"
