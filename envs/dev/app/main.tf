@@ -21,7 +21,7 @@ provider "linode" {}
 
 locals {
   environment = "dev"
-  region      = "se-sto"
+  region      = "us-east"   #"se-sto"
 
   # Must match the VPC created by the network-dev workspace (<name>-<environment>).
   vpc_label   = "pilot-${local.environment}"
@@ -69,7 +69,7 @@ module "web" {
   environment   = local.environment
   region        = local.region
   subnet_id     = one(data.linode_vpc_subnets.app.vpc_subnets).id
-  instance_type = "g6-nanode-1"
+  instance_type = "g6-dedicated-8"  # "g6-nanode-1"
 
   authorized_keys = var.ssh_public_keys
   admin_ssh_cidrs = var.admin_ssh_cidrs
