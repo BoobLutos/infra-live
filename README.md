@@ -8,6 +8,19 @@ Live configuration for the Linode pilot. Each folder under `envs/` is one HCP Te
 | `envs/dev/app` | `app-dev` | Automatically, after `network-dev` applies |
 | `envs/prod/network` | `network-prod` | After someone clicks **Confirm & apply** |
 | `envs/prod/app` | `app-prod` | After `network-prod`, with confirmation |
+| `envs/dev/kubernetes` | `kubernetes-dev` | Automatically on merge |
+| `envs/dev/platform` | `platform-dev` | Automatically, after `kubernetes-dev` applies |
+| `envs/prod/kubernetes` | `kubernetes-prod` | After someone clicks **Confirm & apply** |
+| `envs/prod/platform` | `platform-prod` | After `kubernetes-prod`, with confirmation |
+
+The `kubernetes` workspaces create an LKE cluster (`pilot-<env>`); the `platform` workspaces look it up by label and install ingress-nginx, cert-manager, Argo CD and n8n on it. Both come from the `terraform-linode-kubernetes` module.
+
+| Env | Argo CD | n8n |
+| --- | --- | --- |
+| dev | `argocd.dev.sinza.org` | `n8n.dev.sinza.org` |
+| prod | `argocd.sinza.org` | `n8n.sinza.org` |
+
+DNS for `sinza.org` is hosted outside Linode, so after a platform workspace first applies, point those A records at its `ingress_ip` output.
 
 ## How a change flows
 

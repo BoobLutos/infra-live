@@ -30,8 +30,12 @@ jobs:
         dir:
           - envs/dev/network
           - envs/dev/app
+          - envs/dev/kubernetes
+          - envs/dev/platform
           - envs/prod/network
           - envs/prod/app
+          - envs/prod/kubernetes
+          - envs/prod/platform
     env:
       # Lets `terraform init` download modules from the private registry.
       TF_TOKEN_app_terraform_io: ${{ secrets.TF_API_TOKEN }}

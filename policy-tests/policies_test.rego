@@ -45,9 +45,19 @@ good_vpc := {
 	"change": {"actions": ["create"], "after": {"region": "se-sto"}, "after_unknown": {}},
 }
 
+good_lke := {
+	"address": "module.kubernetes.linode_lke_cluster.this",
+	"type": "linode_lke_cluster",
+	"change": {
+		"actions": ["create"],
+		"after": {"region": "se-sto", "tags": good_tags, "pool": [{"type": "g6-standard-1", "count": 2}]},
+		"after_unknown": {},
+	},
+}
+
 plan(changes) := {"plan": {"resource_changes": changes}}
 
-good_plan := plan([good_firewall, good_instance, good_vpc])
+good_plan := plan([good_firewall, good_instance, good_vpc, good_lke])
 
 # Helpers to build bad variants of the good resources.
 with_after(rc, patch) := object.union(rc, {"change": object.union(rc.change, {"after": object.union(rc.change.after, patch)})})
@@ -89,6 +99,21 @@ test_deletes_are_never_blocked if {
 test_large_plan_denied if {
 	bad := plan([with_after(good_instance, {"type": "g6-dedicated-8"})])
 	count(mandatory.deny) == 1 with input as bad
+}
+
+test_lke_region_checked if {
+	bad := plan([with_after(good_lke, {"region": "us-east"})])
+	count(mandatory.deny) == 1 with input as bad
+}
+
+test_lke_large_node_pool_denied if {
+	bad := plan([with_after(good_lke, {"pool": [{"type": "g6-standard-1", "count": 2}, {"type": "g6-dedicated-8", "count": 1}]})])
+	count(mandatory.deny) == 1 with input as bad
+}
+
+test_lke_missing_tags_denied if {
+	bad := plan([with_after(good_lke, {"tags": []})])
+	count(required_tags.deny) == 2 with input as bad
 }
 
 # --- required_tags ------------------------------------------------------------

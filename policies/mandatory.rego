@@ -11,7 +11,7 @@ import rego.v1
 
 allowed_regions := {"se-sto", "eu-central"}
 
-regional_types := {"linode_instance", "linode_vpc"}
+regional_types := {"linode_instance", "linode_vpc", "linode_lke_cluster"}
 
 deny contains msg if {
 	some resource_type in regional_types
@@ -30,6 +30,14 @@ deny contains msg if {
 	plan_type := rc.change.after.type
 	not plan_type in allowed_instance_types
 	msg := sprintf("[allowed-instance-types] %s uses plan %q; allowed plans are %v", [rc.address, plan_type, sort(allowed_instance_types)])
+}
+
+# LKE worker nodes are Linode instances too, so node pools follow the same list.
+deny contains msg if {
+	some rc in changes("linode_lke_cluster")
+	some pool in object.get(rc.change.after, "pool", [])
+	not pool.type in allowed_instance_types
+	msg := sprintf("[allowed-instance-types] %s has a node pool of plan %q; allowed plans are %v", [rc.address, pool.type, sort(allowed_instance_types)])
 }
 
 # --- 3. Firewall baseline: deny-by-default, and every instance behind one ---
