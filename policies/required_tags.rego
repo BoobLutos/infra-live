@@ -4,7 +4,7 @@ package terraform.policies.required_tags
 
 import rego.v1
 
-taggable := {"linode_instance", "linode_firewall"}
+taggable := {"linode_instance", "linode_firewall", "linode_lke_cluster"}
 
 deny contains msg if {
 	some resource_type in taggable
