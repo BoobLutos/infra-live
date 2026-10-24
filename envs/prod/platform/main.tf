@@ -86,7 +86,7 @@ provider "kubectl" {
 
 module "platform" {
   source  = "app.terraform.io/zimba/kubernetes/linode//modules/platform"
-  version = "1.0.0" # exact pin: promote new versions dev -> prod via PR
+  version = "1.0.2" # exact pin: promote new versions dev -> prod via PR
 
   acme_email  = var.acme_email
   argocd_host = "argocd.sinza.org"
